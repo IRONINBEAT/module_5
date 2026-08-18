@@ -33,14 +33,21 @@ static ssize_t proc_read(struct file *file, char __user *buf,
 static ssize_t proc_write(struct file *file, const char __user *buf,
 			   size_t count, loff_t *ppos)
 {
-	if (count > PROC_BUFFER_SIZE - 1)
-		count = PROC_BUFFER_SIZE - 1;
+	loff_t pos = *ppos;
 
-	if (copy_from_user(proc_buffer, buf, count))
+	if (pos < 0 || pos >= PROC_BUFFER_SIZE - 1)
+		return -ENOSPC;
+
+	if (count > PROC_BUFFER_SIZE - 1 - pos)
+		count = PROC_BUFFER_SIZE - 1 - pos;
+
+	if (copy_from_user(proc_buffer + pos, buf, count))
 		return -EFAULT;
 
-	proc_buffer[count] = '\0';
-	proc_buffer_len = count;
+	pos += count;
+	proc_buffer[pos] = '\0';
+	proc_buffer_len = pos;
+	*ppos = pos;
 
 	return count;
 }
@@ -76,7 +83,7 @@ static void __exit proc_module_exit(void)
 module_init(proc_module_init);
 module_exit(proc_module_exit);
 
-MODULE_LICENSE("VoroninIlyaLicense");
+MODULE_LICENSE("VoroninLicense");
 MODULE_AUTHOR("Ilya Voronin <ilyavoron2004@gmail.com>");
 MODULE_DESCRIPTION("Модуль ядра для обмена данными с userspace через /proc");
 MODULE_VERSION("1.0");
