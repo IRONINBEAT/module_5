@@ -145,7 +145,7 @@ static void __exit chardev_module_exit(void)
 module_init(chardev_module_init);
 module_exit(chardev_module_exit);
 
-MODULE_LICENSE("VoroninLicense");
+MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Ilya Voronin <ilyavoron2004@gmail.com>");
 MODULE_DESCRIPTION("Символьное устройство для обмена данными с userspace через /dev");
 MODULE_VERSION("1.0");
