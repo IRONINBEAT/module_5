@@ -107,7 +107,7 @@ static int __init chardev_module_init(void)
 		return major_number;
 	}
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 4, 0)
+#ifdef CLASS_CREATE_SINGLE_ARG
 	chardev_class = class_create(CLASS_NAME);
 #else
 	chardev_class = class_create(THIS_MODULE, CLASS_NAME);
